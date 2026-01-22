@@ -1,0 +1,97 @@
+kafka:    
+  application.id: my-inventory-demo
+
+  # Bootstrap Server
+  bootstrap.servers: <bootstrap-server>:9092
+  security.protocol: SASL_SSL
+  sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username='<kafka-cluster-api-key>' password='<kafka-cluster-api-secret>';"
+  sasl.mechanism: PLAIN
+
+  # Schema Registry
+  schema.registry.url: https://<SR-endpoint>.confluent.cloud
+  basic.auth.credentials.source: USER_INFO
+  basic.auth.user.info: "<sr-api-key>:<sr-api-secret>"
+  orders_5min_realtime
+  metrics.recording.level: DEBUG
+  fetch.min.bytes: 10048576
+  fetch.max.wait.ms: 1500
+  max.partition.fetch.bytes: 10048576
+  receive.buffer.bytes: 10048576
+  num.stream.threads: 6
+
+  state.dir: ./data
+      
+paths:  
+  /inventory:
+    get:  
+      description: Return all inventories
+      kafka:  
+        topic: inventory_20260119_1902_test
+        query:
+          method: all
+        serializer:
+          key: avro
+          value: avro
+        mergeKey: true
+        keyField: productId
+      responses:
+        '200':
+          description: A list of inventories
+          content:
+            application/json:
+              schema:
+                type: array
+
+  /inventory/{productId}:
+    parameters:
+    - name: productId
+      in: path
+      description: the product identifier
+    get:
+      kafka:
+        topic: inventory_20260119_1902_test
+        serializer:
+          key: avro
+          value: avro
+        query:
+          method: get
+          key: ${parameters.productId}
+        mergeKey: true
+        keyField: productId
+      responses:
+        '200':
+          description:
+          content:
+            application/json:
+              schema:
+                type: object
+
+
+  /aggregation/5min/{productId}/{windowStart}:
+    parameters:
+    - name: productId
+      in: path
+      description: the product id
+    - name: windowStart
+      in: path
+      description: the start window of product purchase
+    get:
+      kafka:
+        topic: orders_5min_realtime
+        serializer:
+          key: avro
+          value: avro
+        keyFields:
+          product_id: ${parameters.productId}
+          bucket_start: ${parameters.windowStart}
+        mergeKey: true  # Include key fields in response
+        query:
+          method: get
+          key: ${parameters.productId}
+      responses:
+        '200':
+          description:
+          content:
+            application/json:
+              schema:
+                type: object

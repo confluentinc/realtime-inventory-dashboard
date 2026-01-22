@@ -1,0 +1,11 @@
+version: "3"
+services:
+  kafka-streams-app:
+    image: tsuz/microservice-for-kafka:v0.0.11
+    ports:
+      - "7001:7001"
+    environment:
+      CONFIG_PATH: /app/config/config.yaml
+    volumes:
+      - ./config.yaml:/app/config/config.yaml
+  
