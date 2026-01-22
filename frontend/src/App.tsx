@@ -33,8 +33,11 @@ function App() {
           name_ja: item.nameJa,
           name_en: item.nameEn,
           category: item.category,
-          shown_in_store: item.shownInStore,
+          shown_in_store: 0,
           updated_at: new Date(item.updatedAt).toISOString(),
+          inventory_in_store: item.inventoryQty,
+          sales_per_hour: item.salesPerHour || 12,
+          in_delivery: item.deliveryQty,
         }))
       );
       setLoading(false);
@@ -44,10 +47,10 @@ function App() {
     }
   }
 
-  const totalItems = products.reduce((sum, p) => sum + p.shown_in_store, 0);
-  const lowStockItems = products.filter(p => p.shown_in_store < p.minimum_threshold).length;
+  const totalItems = products.reduce((sum, p) => sum + p.inventory_in_store, 0);
+  const lowStockItems = products.filter(p => p.inventory_in_store < p.minimum_threshold).length;
   const totalDelivery = products.reduce((sum, p) => sum + p.in_delivery, 0);
-  const totalShownInStore = products.reduce((sum, p) => sum + p.shown_in_store, 0);
+  const totalShownInStore = products.reduce((sum, p) => sum + p.inventory_in_store, 0);
 
   const getSortedProducts = () => {
     if (fixedPosition) {
@@ -55,8 +58,8 @@ function App() {
     }
 
     return [...products].sort((a, b) => {
-      const aTotalAvailable = a.shown_in_store + a.inventory_in_store;
-      const bTotalAvailable = b.shown_in_store + b.inventory_in_store;
+      const aTotalAvailable = a.inventory_in_store + a.inventory_in_store;
+      const bTotalAvailable = b.inventory_in_store + b.inventory_in_store;
       const aExpectedSales3h = a.sales_per_hour * 3;
       const bExpectedSales3h = b.sales_per_hour * 3;
       const aIsCritical = aExpectedSales3h > aTotalAvailable;
@@ -65,14 +68,14 @@ function App() {
       if (aIsCritical && !bIsCritical) return -1;
       if (!aIsCritical && bIsCritical) return 1;
 
-      const aIsOutOfStock = a.shown_in_store === 0;
-      const bIsOutOfStock = b.shown_in_store === 0;
+      const aIsOutOfStock = a.inventory_in_store === 0;
+      const bIsOutOfStock = b.inventory_in_store === 0;
 
       if (aIsOutOfStock && !bIsOutOfStock) return -1;
       if (!aIsOutOfStock && bIsOutOfStock) return 1;
 
-      const aIsLowDisplay = a.shown_in_store < a.minimum_threshold;
-      const bIsLowDisplay = b.shown_in_store < b.minimum_threshold;
+      const aIsLowDisplay = a.inventory_in_store < a.minimum_threshold;
+      const bIsLowDisplay = b.inventory_in_store < b.minimum_threshold;
 
       if (aIsLowDisplay && !bIsLowDisplay) return -1;
       if (!aIsLowDisplay && bIsLowDisplay) return 1;
@@ -119,48 +122,12 @@ function App() {
             iconColor="text-amber-400"
             subtitle={t('metrics.inDelivery.subtitle')}
           />
-          <MetricCard
-            title={t('metrics.onDisplay')}
-            value={totalShownInStore}
-            icon={Store}
-            iconColor="text-emerald-400"
-            subtitle={t('metrics.onDisplay.subtitle')}
-          />
         </div>
 
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-white">{t('inventory.title')}</h2>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={loadInventory}
-                disabled={loading}
-                className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-2 hover:bg-emerald-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <RefreshCw className={`w-4 h-4 text-emerald-400 ${loading ? 'animate-spin' : ''}`} />
-                <span className="text-emerald-400 text-sm font-medium">
-                  {loading ? 'Loading...' : 'Refresh'}
-                </span>
-              </button>
-              <button
-                onClick={() => setFixedPosition(!fixedPosition)}
-                className="flex items-center gap-3 bg-[#181B1F] border border-[#2B2F36] rounded-lg px-4 py-2 hover:border-[#3B3F46] transition-all"
-              >
-                <span className="text-[#A0A4A8] text-sm font-medium">{t('settings.fixedPosition')}</span>
-                <div className="relative">
-                  <div className={`w-11 h-6 rounded-full transition-colors ${
-                    fixedPosition ? 'bg-emerald-500' : 'bg-[#2B2F36]'
-                  }`}>
-                    <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                      fixedPosition ? 'translate-x-5' : 'translate-x-0'
-                    }`}></div>
-                  </div>
-                </div>
-                <span className="text-xs text-[#6C7075]">
-                  {fixedPosition ? t('settings.fixedPosition.enabled') : t('settings.fixedPosition.disabled')}
-                </span>
-              </button>
-            </div>
+
           </div>
           {loading ? (
             <div className="bg-[#181B1F] border border-[#2B2F36] rounded-lg p-12 text-center">

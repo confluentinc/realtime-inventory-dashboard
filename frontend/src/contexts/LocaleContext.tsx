@@ -15,8 +15,8 @@ const translations: Translations = {
     en: 'Inventory Monitor',
   },
   'app.subtitle': {
-    ja: 'リアルタイム購買追跡と店舗在庫管理',
-    en: 'Real-time product tracking and stock management',
+    ja: 'リアルタイム店舗在庫数、配達数の可視化',
+    en: 'Real-time inventory and delivery tracking',
   },
   'app.live': {
     ja: 'ライブ',
@@ -72,7 +72,7 @@ const translations: Translations = {
   },
   'product.storage': {
     ja: '店舗在庫',
-    en: 'Storage',
+    en: 'Inventory',
   },
   'product.delivery': {
     ja: '配送中',
@@ -87,16 +87,16 @@ const translations: Translations = {
     en: '/hr',
   },
   'product.hour': {
-    ja: '時間',
-    en: 'hour',
+    ja: '時間後の在庫数',
+    en: ' hour later inventory count',
   },
   'product.hours': {
-    ja: '時間',
-    en: 'hours',
+    ja: '時間後の在庫数',
+    en: ' hours later inventory count',
   },
   'product.emptyIn': {
     ja: '時間後に展示品切れ（予測）',
-    en: 'Empty in',
+    en: ' hours later - empty inventory!',
   },
   'alert.lowDisplay': {
     ja: '展示商品不足',
@@ -111,8 +111,8 @@ const translations: Translations = {
     en: 'Critical Shortage',
   },
   'alert.noDelivery': {
-    ja: '配送予定なし',
-    en: 'No Delivery Scheduled',
+    ja: '配送なし',
+    en: 'No Delivery',
   },
   'category.beverages': {
     ja: '飲料',

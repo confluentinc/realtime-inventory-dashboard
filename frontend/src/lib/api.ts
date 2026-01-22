@@ -3,11 +3,13 @@ export interface InventoryAPIResponse {
   nameJa: string;
   nameEn: string;
   category: string;
-  shownInStore: number;
+  salesPerHour: number;
+  inventoryQty: number;
+  deliveryQty: number;
   updatedAt: number;
 }
 
-const API_URL = 'https://54.178.79.135/inventory';
+const API_URL = 'http://52.68.213.179:7001/inventory';
 
 export async function fetchInventory(): Promise<InventoryAPIResponse[]> {
   const response = await fetch(API_URL);
