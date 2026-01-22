@@ -17,7 +17,7 @@ resource "confluent_flink_statement" "create-table" {
     id = data.confluent_user.account.id
   }
 
-  statement = file("./statements/create-table.sql")
+  statement = file("./statements/create-inventory-table.sql")
 
   properties = {
     "sql.current-catalog"  = data.confluent_environment.myenv.display_name
@@ -50,7 +50,7 @@ resource "confluent_flink_statement" "example" {
     id = data.confluent_user.account.id
   }
 
-  statement = file("./statements/generate-order-message.sql")
+  statement = file("./statements/generate-inventory.sql")
 
   properties = {
     "sql.current-catalog"  = data.confluent_environment.myenv.display_name
