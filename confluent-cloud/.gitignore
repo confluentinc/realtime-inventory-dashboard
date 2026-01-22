@@ -3,3 +3,4 @@
 apply-terraform.sh
 
 *.tfstate
+*.tfstate.*
