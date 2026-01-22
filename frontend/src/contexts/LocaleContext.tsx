@@ -146,6 +146,14 @@ const translations: Translations = {
     ja: '最終更新',
     en: 'Last updated',
   },
+    'product.purchases5min': {
+    ja: '購入数（5分間隔・過去1時間）',
+    en: 'Purchases (5-min intervals, last hour)',
+  },
+    'product.totalInHour': {
+    ja: '個（1時間合計）',
+    en: 'total in 1h',
+  },
 };
 
 interface LocaleContextType {
