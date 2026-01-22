@@ -30,12 +30,20 @@ export async function fetchInventory(): Promise<InventoryAPIResponse[]> {
   return await response.json();
 }
 
-export async function fetchAggregation(productId: number, windowStart: number): Promise<AggregationResponse> {
-  const response = await fetch(`${AGGREGATION_API_URL}/${productId}/${windowStart}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch aggregation for product ${productId} at ${windowStart}`);
+export async function fetchAggregation(productId: number, windowStart: number): Promise<number> {
+  const url = `${AGGREGATION_API_URL}/${productId}/${windowStart}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      // Return 0 for non-200 responses
+      return 0;
+    }
+    const data: AggregationResponse = await response.json();
+    return data.total_quantity ?? 0;
+  } catch (error) {
+    // Return 0 on any error
+    return 0;
   }
-  return await response.json();
 }
 
 // Get the start of the current 5-minute window (Unix timestamp in seconds)

@@ -62,9 +62,9 @@ export default function StackedBarGraph({ product }: StackedBarGraphProps) {
     // Fetch data for a single window
   const fetchWindowData = useCallback(async (windowStart: number): Promise<WindowData> => {
     const data = await fetchAggregation(product.productId, windowStart);
-    return { 
+    return {
       windowStart, 
-      quantity: data?.total_quantity ?? 0 
+      quantity: data ?? 0 
     };
   }, [product.productId]);
 
