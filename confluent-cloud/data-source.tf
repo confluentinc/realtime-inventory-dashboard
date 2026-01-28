@@ -3,6 +3,14 @@ data "confluent_organization" "main" {}
 data "confluent_environment" "myenv" {
   display_name = var.environment_name
 }
+
+data "confluent_schema_registry_cluster" "myenv" {
+  environment {
+    id = data.confluent_environment.myenv.id
+  }
+}
+
+
 data "confluent_flink_region" "main" {
   cloud  = var.flink_cloud
   region = var.flink_region

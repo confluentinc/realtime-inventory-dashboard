@@ -102,7 +102,7 @@ export default function StackedBarGraph({ product }: StackedBarGraphProps) {
           return updated;
         });
       }
-    }, 1000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [currentWindowStart, fetchWindowData, fetchAllWindows]);
