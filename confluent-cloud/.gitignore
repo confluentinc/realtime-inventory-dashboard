@@ -1,0 +1,6 @@
+.terraform
+
+apply-terraform.sh
+
+*.tfstate
+*.tfstate.*
